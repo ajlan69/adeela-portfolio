@@ -37,6 +37,25 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Fine ivory paper grain that scrolls with the page */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.12;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='9.6' numOctaves='2' result='noise'/%3E%3CfeDiffuseLighting in='noise' lighting-color='%23eef1f6' surfaceScale='1'%3E%3CfeDistantLight azimuth='135' elevation='60'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-position: 0 0;
+      background-size: 200px 200px;
     }
 
     /* =====================================================================
@@ -63,6 +82,7 @@
     ===================================================================== */
     .btn-accent {
       position: relative;
+      z-index: 9999;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -524,6 +544,7 @@
     .about-visual {
       position: sticky;
       top: 100px;
+      z-index: 9999;
     }
 
     .photo-frame {
@@ -855,6 +876,101 @@
     }
 
     /* =====================================================================
+       LOADER SCREEN
+    ===================================================================== */
+    body.loading {
+      overflow: hidden;
+    }
+
+    .preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='9.6' numOctaves='2' result='noise'/%3E%3CfeDiffuseLighting in='noise' lighting-color='%23eef1f6' surfaceScale='1'%3E%3CfeDistantLight azimuth='135' elevation='60'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper)'/%3E%3C/svg%3E") 0 0 / 200px 200px repeat, var(--surface);
+      background-blend-mode: multiply;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    .preloader.done {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .preloader-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.4rem;
+      padding: 2.75rem 3.5rem;
+      border-radius: 28px;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='9.6' numOctaves='2' result='noise'/%3E%3CfeDiffuseLighting in='noise' lighting-color='%23eef1f6' surfaceScale='1'%3E%3CfeDistantLight azimuth='135' elevation='60'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper)'/%3E%3C/svg%3E") 0 0 / 200px 200px repeat, linear-gradient(145deg, var(--surface-raised), var(--surface-deep));
+      background-blend-mode: multiply;
+      box-shadow:
+        18px 18px 38px var(--shadow),
+        -16px -16px 34px var(--light),
+        inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+    }
+
+    .preloader-spinner {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 4px solid rgba(120, 136, 160, 0.22);
+      border-top-color: var(--accent-2);
+      box-shadow:
+        6px 6px 14px var(--shadow),
+        -6px -6px 14px var(--light),
+        inset 2px 2px 6px rgba(120, 136, 160, 0.18);
+      animation: spin 0.85s linear infinite;
+    }
+
+    .preloader-logo {
+      font-weight: 700;
+      font-size: 1.3rem;
+      letter-spacing: -0.02em;
+      color: var(--fg);
+      animation: preloader-pulse 1.6s ease-in-out infinite;
+    }
+
+    .preloader-bar {
+      width: 160px;
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(145deg, var(--surface-deep), var(--surface-raised));
+      box-shadow:
+        inset 3px 3px 6px rgba(120, 136, 160, 0.5),
+        inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+      overflow: hidden;
+    }
+
+    .preloader-fill {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      animation: preloader-fill 1.3s ease-in-out forwards;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes preloader-pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes preloader-fill {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+
+    /* =====================================================================
        RESPONSIVE
     ===================================================================== */
     @media (max-width: 900px) {
@@ -970,8 +1086,15 @@
 
       .hero-card,
       .photo-portrait,
-      .portrait-float {
+      .portrait-float,
+      .preloader-spinner,
+      .preloader-logo,
+      .preloader-fill {
         animation: none;
+      }
+
+      .preloader-fill {
+        width: 100%;
       }
 
       .reveal {
@@ -983,6 +1106,14 @@
   </style>
 </head>
 <body>
+  <div id="preloader" class="preloader" role="status" aria-label="Loading">
+    <div class="preloader-box">
+      <div class="preloader-spinner"></div>
+      <div class="preloader-logo">Adeela Raabia</div>
+      <div class="preloader-bar"><span class="preloader-fill"></span></div>
+    </div>
+  </div>
+
   <header>
     <div class="container nav">
       <a href="#" class="logo">Adeela Raabia</a>
@@ -1174,6 +1305,18 @@
   </footer>
 
   <script>
+    // Preloader
+    const preloader = document.getElementById('preloader');
+    document.body.classList.add('loading');
+    const hidePreloader = () => {
+      preloader?.classList.add('done');
+      document.body.classList.remove('loading');
+      setTimeout(() => preloader?.remove(), 700);
+    };
+    const finishLoad = () => setTimeout(hidePreloader, 700);
+    if (document.readyState === 'complete') finishLoad();
+    else window.addEventListener('load', finishLoad);
+
     // Mobile menu toggle
     const menuBtn = document.getElementById('menuBtn');
     const navLinks = document.getElementById('navLinks');
